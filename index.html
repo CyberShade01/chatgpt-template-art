@@ -59,28 +59,6 @@
       font-weight: bold;
     }
 
-    .top-text {
-      position: absolute;
-      top: 60px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 24px;
-      white-space: nowrap;
-      overflow: hidden;
-      border-right: 2px solid red;
-      width: 18ch;
-      animation: typing 3s steps(18) infinite, blink 0.5s step-end infinite;
-    }
-
-    @keyframes typing {
-      from { width: 0; }
-      to { width: 18ch; }
-    }
-
-    @keyframes blink {
-      50% { border-color: transparent; }
-    }
-
     .center-container {
       position: absolute;
       top: 50%;
@@ -88,10 +66,15 @@
       transform: translate(-50%, -50%);
       background: #111;
       border-radius: 20px;
-      width: 300px;
+      width: 600px;
+      height: 400px;
       padding: 20px;
       text-align: center;
       color: red;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-around;
     }
 
     .center-container .search-bar {
@@ -99,23 +82,32 @@
       border: none;
       padding: 10px;
       border-radius: 10px;
-      width: 100%;
+      width: 80%;
       margin-bottom: 20px;
       color: red;
     }
 
-    .center-container button {
+    .center-container .app-button {
       background: red;
       color: black;
       border: none;
-      padding: 10px;
-      width: 100%;
+      width: 100px;
+      height: 100px;
+      margin: 10px;
       border-radius: 10px;
       cursor: pointer;
+      display: inline-block;
     }
 
-    .center-container button:hover {
+    .center-container .app-button:hover {
       background: #ff4d4d;
+    }
+
+    .app-buttons-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
     }
   </style>
 </head>
@@ -130,11 +122,14 @@
     <button>⚙️</button>
   </div>
 
-  <div class="top-text">Welcome to the Particle Network</div>
-
   <div class="center-container">
     <input class="search-bar" type="text" placeholder="Search...">
-    <button>Apps</button>
+    <div class="app-buttons-container">
+      <button class="app-button">App 1</button>
+      <button class="app-button">App 2</button>
+      <button class="app-button">App 3</button>
+      <button class="app-button">App 4</button>
+    </div>
   </div>
 
   <canvas id="particleCanvas"></canvas>
