@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Red and Black Particle Network</title>
+  <style>
+    body {
+      margin: 0;
+      background: black;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+      color: red;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 60px;
+      height: 100%;
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .sidebar button {
+      background: #222;
+      color: red;
+      border: none;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 40px;
+      text-align: center;
+    }
+
+    .sidebar button:hover {
+      background: red;
+      color: black;
+    }
+
+    .header {
+      position: absolute;
+      top: 0;
+      width: 100%;
+      background: #111;
+      color: red;
+      text-align: center;
+      padding: 10px 0;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .top-text {
+      position: absolute;
+      top: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 24px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid red;
+      width: 18ch;
+      animation: typing 3s steps(18) infinite, blink 0.5s step-end infinite;
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 18ch; }
+    }
+
+    @keyframes blink {
+      50% { border-color: transparent; }
+    }
+
+    .center-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #111;
+      border-radius: 20px;
+      width: 300px;
+      padding: 20px;
+      text-align: center;
+      color: red;
+    }
+
+    .center-container .search-bar {
+      background: #222;
+      border: none;
+      padding: 10px;
+      border-radius: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+      color: red;
+    }
+
+    .center-container button {
+      background: red;
+      color: black;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .center-container button:hover {
+      background: #ff4d4d;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">Clover</div>
+
+  <div class="sidebar">
+    <button>🏠</button>
+    <button>🎮</button>
+    <button>🔍</button>
+    <button>📱</button>
+    <button>⚙️</button>
+  </div>
+
+  <div class="top-text">Welcome to the Particle Network</div>
+
+  <div class="center-container">
+    <input class="search-bar" type="text" placeholder="Search...">
+    <button>Apps</button>
+  </div>
+
+  <canvas id="particleCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const particles = [];
+    const maxParticles = 100;
+
+    class Particle {
+      constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.radius = Math.random() * 2 + 1;
+        this.xVelocity = (Math.random() - 0.5) * 2;
+        this.yVelocity = (Math.random() - 0.5) * 2;
+      }
+
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = 'red';
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      update() {
+        this.x += this.xVelocity;
+        this.y += this.yVelocity;
+
+        if (this.x < 0 || this.x > canvas.width) this.xVelocity *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.yVelocity *= -1;
+      }
+    }
+
+    function connectParticles() {
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const distance = Math.hypot(
+            particles[i].x - particles[j].x,
+            particles[i].y - particles[j].y
+          );
+
+          if (distance < 150) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(255, 0, 0, ${1 - distance / 150})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+            ctx.closePath();
+          }
+        }
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach((particle) => {
+        particle.update();
+        particle.draw();
+      });
+
+      connectParticles();
+
+      requestAnimationFrame(animate);
+    }
+
+    function initParticles() {
+      for (let i = 0; i < maxParticles; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        particles.push(new Particle(x, y));
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles.length = 0;
+      initParticles();
+    });
+
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
